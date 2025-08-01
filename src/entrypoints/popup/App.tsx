@@ -1,7 +1,4 @@
-import reactLogo from "@/assets/react.svg";
 import { useSetValueCallback, useValue } from "@/store";
-import "./App.css";
-import wxtLogo from "/wxt.svg";
 
 function App() {
   const count = useValue("count");
@@ -11,26 +8,15 @@ function App() {
   );
 
   return (
-    <>
-      <div>
-        <a href="https://wxt.dev" target="_blank">
-          <img src={wxtLogo} className="logo" alt="WXT logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>WXT + React</h1>
-      <div className="card">
-        <button onClick={incrementCount}>count is {count}</button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the WXT and React logos to learn more
-      </p>
-    </>
+    <div className="w-64 p-4 flex flex-col gap-4 items-center">
+      <h1 className="text-2xl font-bold">Scraper PoC</h1>
+      <button
+        onClick={incrementCount}
+        className="bg-amber-700 text-white px-2 py-1 rounded-md"
+      >
+        count is {count}
+      </button>
+    </div>
   );
 }
 
