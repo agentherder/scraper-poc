@@ -1,10 +1,14 @@
-import { useState } from "react";
 import reactLogo from "@/assets/react.svg";
-import wxtLogo from "/wxt.svg";
+import { useSetValueCallback, useValue } from "@/store";
 import "./App.css";
+import wxtLogo from "/wxt.svg";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const count = useValue("count");
+  const incrementCount = useSetValueCallback(
+    "count",
+    (_, store) => store.getValue("count") + 1,
+  );
 
   return (
     <>
@@ -18,9 +22,7 @@ function App() {
       </div>
       <h1>WXT + React</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
+        <button onClick={incrementCount}>count is {count}</button>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>

@@ -14,6 +14,9 @@ importers:
       react-dom:
         specifier: ^19.1.1
         version: 19.1.1(react@19.1.1)
+      tinybase:
+        specifier: ^6.5.0
+        version: 6.5.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
     devDependencies:
       '@types/react':
         specifier: ^19.1.9
@@ -1820,6 +1823,74 @@ packages:
 
   through@2.3.8:
     resolution: {integrity: sha512-w89qg7PI8wAdvX60bMDP+bFoD5Dvhm9oLheFp5O4a2QF0cSBGsBX4qZmadPMvVqlLJBBci+WqGGOAPvcDeNSVg==}
+
+  tinybase@6.5.0:
+    resolution: {integrity: sha512-As/X1MME9xQ1U40pYtdtSN9pY7MQbDyIlmySrJsjfTVSuzOzp8sj4nwLEADP2ukvl2D5JVBfTmSDV5B+ReJ9+A==}
+    peerDependencies:
+      '@automerge/automerge-repo': ^1.2.1
+      '@cloudflare/workers-types': ^4.20250724.0
+      '@electric-sql/pglite': ^0.2.17
+      '@libsql/client': ^0.15.10
+      '@powersync/common': ^1.34.0
+      '@sqlite.org/sqlite-wasm': ^3.50.3-build1
+      '@vlcn.io/crsqlite-wasm': ^0.16.0
+      bun: ^1.2.19
+      electric-sql: ^0.12.1
+      expo: ^53.0.9
+      expo-sqlite: ^15.2.14
+      partykit: ^0.0.115
+      partysocket: ^1.1.4
+      postgres: ^3.4.7
+      react: ^19.0.0
+      react-dom: ^19.0.0
+      react-native-mmkv: 3.3.0
+      react-native-sqlite-storage: ^6.0.1
+      sqlite3: ^5.1.7
+      ws: ^8.18.3
+      yjs: ^13.6.27
+    peerDependenciesMeta:
+      '@automerge/automerge-repo':
+        optional: true
+      '@cloudflare/workers-types':
+        optional: true
+      '@electric-sql/pglite':
+        optional: true
+      '@libsql/client':
+        optional: true
+      '@powersync/common':
+        optional: true
+      '@sqlite.org/sqlite-wasm':
+        optional: true
+      '@vlcn.io/crsqlite-wasm':
+        optional: true
+      bun:
+        optional: true
+      electric-sql:
+        optional: true
+      expo:
+        optional: true
+      expo-sqlite:
+        optional: true
+      partykit:
+        optional: true
+      partysocket:
+        optional: true
+      postgres:
+        optional: true
+      react:
+        optional: true
+      react-dom:
+        optional: true
+      react-native-mmkv:
+        optional: true
+      react-native-sqlite-storage:
+        optional: true
+      sqlite3:
+        optional: true
+      ws:
+        optional: true
+      yjs:
+        optional: true
 
   tinyexec@1.0.1:
     resolution: {integrity: sha512-5uC6DDlmeqiOwCPmK9jMSdOuZTh8bU39Ys6yidB+UTt5hfZUPGAypSgFRiEp+jbi9qH40BLDvy85jIU88wKSqw==}
@@ -3785,6 +3856,11 @@ snapshots:
       real-require: 0.2.0
 
   through@2.3.8: {}
+
+  tinybase@6.5.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1):
+    optionalDependencies:
+      react: 19.1.1
+      react-dom: 19.1.1(react@19.1.1)
 
   tinyexec@1.0.1: {}
 
