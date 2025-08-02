@@ -15,11 +15,11 @@ export const q = <T extends Element = Element>(
   ...selectors: string[]
 ): T | null => {
   for (const sel of selectors) {
-    const found = parent?.querySelector<T>(sel)
-    if (found) return found
+    const found = parent?.querySelector<T>(sel);
+    if (found) return found;
   }
-  return null
-}
+  return null;
+};
 
 /**
  * Fallback query all selector
@@ -32,11 +32,11 @@ export const qa = <T extends Element = Element>(
   ...selectors: string[]
 ): NodeListOf<T> | null => {
   for (const sel of selectors) {
-    const found = parent?.querySelectorAll<T>(sel)
-    if (found?.length) return found
+    const found = parent?.querySelectorAll<T>(sel);
+    if (found?.length) return found;
   }
-  return null
-}
+  return null;
+};
 
 /**
  * Fallback closest selector
@@ -49,8 +49,8 @@ export const qc = <T extends Element = Element>(
   ...selectors: string[]
 ): T | null => {
   for (const sel of selectors) {
-    const found = el?.closest<T>(sel)
-    if (found) return found
+    const found = el?.closest<T>(sel);
+    if (found) return found;
   }
-  return null
-}
+  return null;
+};

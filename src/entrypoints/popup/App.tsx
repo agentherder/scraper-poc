@@ -8,11 +8,11 @@ function App() {
   );
 
   return (
-    <div className="w-64 p-4 flex flex-col gap-4 items-center">
+    <div className="flex w-64 flex-col items-center gap-4 p-4">
       <h1 className="text-2xl font-bold">Scraper PoC</h1>
       <button
         onClick={incrementCount}
-        className="bg-amber-700 text-white px-2 py-1 rounded-md"
+        className="rounded-md bg-amber-700 px-2 py-1 text-white"
       >
         count is {count}
       </button>
