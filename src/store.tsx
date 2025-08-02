@@ -1,7 +1,7 @@
 import React from "react";
 import { createLocalPersister } from "tinybase/persisters/persister-browser/with-schemas";
 import * as UiReact from "tinybase/ui-react/with-schemas";
-import { createStore } from "tinybase/with-schemas";
+import { createStore, getUniqueId } from "tinybase/with-schemas";
 
 const tablesSchema = {} as const;
 const valuesSchema = { count: { type: "number", default: 0 } } as const;
@@ -29,3 +29,5 @@ export const StoreProvider: React.FC<React.PropsWithChildren> = ({
 
   return <Provider store={store}>{children}</Provider>;
 };
+
+export const genId = () => getUniqueId();
