@@ -1,10 +1,36 @@
 import React from "react";
 import { createLocalPersister } from "tinybase/persisters/persister-browser/with-schemas";
 import * as UiReact from "tinybase/ui-react/with-schemas";
-import { createStore, getUniqueId } from "tinybase/with-schemas";
+import {
+  createMergeableStore,
+  TablesSchema,
+  ValuesSchema,
+} from "tinybase/with-schemas";
 
-const tablesSchema = {} as const;
-const valuesSchema = { count: { type: "number", default: 0 } } as const;
+const tablesSchema = {
+  threads: {
+    external_id: { type: "string" },
+    platform: { type: "string" },
+    service: { type: "string" },
+    url: { type: "string" },
+    title: { type: "string" },
+    scraped_at: { type: "number" },
+  },
+  messages: {
+    thread_id: { type: "string" },
+    external_id: { type: "string" },
+    role: { type: "string" },
+    model: { type: "string" },
+    content: { type: "string" },
+    source: { type: "string" },
+    scraped_at: { type: "number" },
+  },
+} as const satisfies TablesSchema;
+
+const valuesSchema = {
+  count: { type: "number", default: 0 },
+} as const satisfies ValuesSchema;
+
 type Schemas = [typeof tablesSchema, typeof valuesSchema];
 
 const Ui = UiReact as UiReact.WithSchemas<Schemas>;
@@ -17,7 +43,7 @@ export const StoreProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
   const store = useCreateStore(() =>
-    createStore().setSchema(tablesSchema, valuesSchema),
+    createMergeableStore().setSchema(tablesSchema, valuesSchema),
   );
 
   useCreatePersister(
@@ -29,5 +55,3 @@ export const StoreProvider: React.FC<React.PropsWithChildren> = ({
 
   return <Provider store={store}>{children}</Provider>;
 };
-
-export const genId = () => getUniqueId();

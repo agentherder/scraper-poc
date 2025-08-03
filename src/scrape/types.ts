@@ -1,6 +1,9 @@
-export type ScrapedThread = {
-  /** db primary key */
-  id: string;
+/**
+ * Thread captured by the content script
+ * to be sent to the background service worker
+ * via chrome.runtime.sendMessage
+ */
+export type WireThread = {
   /** platform assigned thread id*/
   external_id?: string;
   /** e.g. openai, anthropic, google, xai */
@@ -12,11 +15,12 @@ export type ScrapedThread = {
   scraped_at: number;
 };
 
-export type ScrapedMessage = {
-  /** db primary key */
-  id: string;
-  /** db foreign key */
-  thread_id: string;
+/**
+ * Message captured by the content script
+ * to be sent to the background service worker
+ * via chrome.runtime.sendMessage
+ */
+export type WireMessage = {
   /** platform assigned message id */
   external_id?: string;
   /** e.g. user, assistant */
@@ -27,5 +31,4 @@ export type ScrapedMessage = {
   /** e.g. innerText, innerHTML */
   source: string;
   scraped_at: number;
-  element?: WeakRef<HTMLElement>;
 };

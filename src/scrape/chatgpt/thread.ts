@@ -1,5 +1,4 @@
-import { type ScrapedMessage, type ScrapedThread } from "@/scrape/types";
-import { genId } from "@/store";
+import { type WireMessage, type WireThread } from "@/scrape/types";
 import { scrapeChatgptMessages } from "./messages";
 
 const conversationIdPattern = /^\/c\/([^\/?#]+)(?=\/|$)/;
@@ -9,20 +8,18 @@ export const scrapeChatgptThread = (
   loc: Location = window.location,
   now: () => number = Date.now,
 ): {
-  thread: ScrapedThread;
-  messages: ScrapedMessage[];
+  thread: WireThread;
+  messages: WireMessage[];
 } => {
   const idMatches = conversationIdPattern.exec(loc.pathname);
   console.log("idMatches", idMatches);
   if (!idMatches) throw Error("No conversation ID found");
-  const id = genId();
   const scraped_at = now();
-  const messages = scrapeChatgptMessages(id, doc, () => scraped_at);
+  const messages = scrapeChatgptMessages(doc, () => scraped_at);
   const title = (window.document.title || messages[0]?.content || "")
     .trim()
     .slice(0, 255);
-  const thread: ScrapedThread = {
-    id: genId(),
+  const thread: WireThread = {
     external_id: decodeURIComponent(idMatches[1]),
     platform: "openai",
     service: "chatgpt",

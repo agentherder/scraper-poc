@@ -1,42 +1,36 @@
 import { qa } from "@/scrape/dom";
-import { type ScrapedMessage } from "@/scrape/types";
-import { genId } from "@/store";
+import { type WireMessage } from "@/scrape/types";
 
 export const scrapeChatgptMessages = (
-  conversation_id: string,
   doc: ParentNode = document,
   now: () => number = Date.now,
-): ScrapedMessage[] => {
+): WireMessage[] => {
   const turns = qa(doc, "[data-testid^='conversation-turn-']");
   if (!turns?.length) {
-    return scrapeNodeMessages(conversation_id, doc, now);
+    return scrapeNodeMessages(doc, now);
   }
-  const messages: ScrapedMessage[] = [];
+  const messages: WireMessage[] = [];
   for (const turnEl of turns) {
-    messages.push(...scrapeNodeMessages(conversation_id, turnEl, now));
+    messages.push(...scrapeNodeMessages(turnEl, now));
   }
   return messages;
 };
 
 const scrapeNodeMessages = (
-  thread_id: string,
   parentNode: ParentNode,
   now: () => number,
-): ScrapedMessage[] => {
+): WireMessage[] => {
   const msgEls = qa(parentNode, "[data-message-id]");
-  const messages: ScrapedMessage[] = [];
+  const messages: WireMessage[] = [];
   if (!msgEls) return messages;
   for (const msgEl of msgEls) {
     const role = msgEl.getAttribute("data-message-author-role") || undefined;
     messages.push({
-      id: genId(),
-      thread_id,
       external_id: msgEl.getAttribute("data-message-id") || undefined,
       role,
       model: msgEl.getAttribute("data-message-model-slug") || undefined,
       content: (role === "user" ? msgEl.textContent : msgEl.innerHTML) || "",
       source: role === "user" ? "innerText" : "innerHTML",
-      element: msgEl instanceof HTMLElement ? new WeakRef(msgEl) : undefined,
       scraped_at: now(),
     });
   }
