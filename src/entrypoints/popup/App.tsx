@@ -1,5 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { useSetValueCallback, useValue } from "@/store";
+import { StoreUi } from "@/store";
+import * as UiReact from "tinybase/ui-react/with-schemas";
+
+const { useValue, useSetValueCallback } = UiReact as StoreUi;
 
 function App() {
   const count = useValue("count");

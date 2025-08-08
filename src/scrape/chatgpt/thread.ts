@@ -1,4 +1,4 @@
-import { type WireMessage, type WireThread } from "@/scrape/types";
+import { WireEnvelope, type WireThread } from "@/scrape/types";
 import { scrapeChatgptMessages } from "./messages";
 
 const conversationIdPattern = /^\/c\/([^\/?#]+)(?=\/|$)/;
@@ -7,12 +7,8 @@ export const scrapeChatgptThread = (
   doc: ParentNode = document,
   loc: Location = window.location,
   now: () => number = Date.now,
-): {
-  thread: WireThread;
-  messages: WireMessage[];
-} => {
+): WireEnvelope => {
   const idMatches = conversationIdPattern.exec(loc.pathname);
-  console.log("idMatches", idMatches);
   if (!idMatches) throw Error("No conversation ID found");
   const scraped_at = now();
   const messages = scrapeChatgptMessages(doc, () => scraped_at);
@@ -27,5 +23,9 @@ export const scrapeChatgptThread = (
     title,
     scraped_at,
   };
-  return { thread, messages };
+  return {
+    is_scraper_poc_message: true,
+    thread,
+    messages,
+  };
 };

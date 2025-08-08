@@ -1,5 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { useSetValueCallback, useValue } from "@/store";
+import { StoreUi } from "@/store";
+import * as UiReact from "tinybase/ui-react/with-schemas";
+
+const { useValue, useSetValueCallback, TablesView } = UiReact as StoreUi;
 
 function App() {
   const count = useValue("count");
@@ -12,6 +15,7 @@ function App() {
     <div className="flex flex-col items-center gap-4 p-4">
       <h1 className="text-2xl font-bold">Scraper PoC</h1>
       <Button onClick={incrementCount}>count is {count}</Button>
+      <TablesView />
     </div>
   );
 }

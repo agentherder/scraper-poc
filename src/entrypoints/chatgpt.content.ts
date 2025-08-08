@@ -1,4 +1,5 @@
 import { scrapeChatgptThread } from "@/scrape/chatgpt/thread";
+import { browser } from "wxt/browser";
 import { defineContentScript } from "wxt/utils/define-content-script";
 
 const STREAM_DEBOUNCE_MS = 1000;
@@ -6,9 +7,10 @@ const STREAM_DEBOUNCE_MS = 1000;
 export default defineContentScript({
   matches: ["https://chatgpt.com/*"],
   main(ctx) {
-    console.log("Hello chatgpt content script.");
+    console.log("Scraper PoC loading chatgpt content script");
     const data = scrapeChatgptThread();
     console.log(data);
+    browser.runtime.sendMessage(data);
 
     const emitCapture = () => {
       const detail = scrapeChatgptThread();

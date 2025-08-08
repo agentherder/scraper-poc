@@ -1,8 +1,14 @@
 /**
- * Thread captured by the content script
+ * Thread and messagescaptured by the content script
  * to be sent to the background service worker
  * via chrome.runtime.sendMessage
  */
+export type WireEnvelope = {
+  is_scraper_poc_message: true;
+  thread: WireThread;
+  messages: WireMessage[];
+};
+
 export type WireThread = {
   /** platform assigned thread id*/
   external_id?: string;
@@ -15,11 +21,6 @@ export type WireThread = {
   scraped_at: number;
 };
 
-/**
- * Message captured by the content script
- * to be sent to the background service worker
- * via chrome.runtime.sendMessage
- */
 export type WireMessage = {
   /** platform assigned message id */
   external_id?: string;
@@ -32,3 +33,13 @@ export type WireMessage = {
   source: string;
   scraped_at: number;
 };
+
+export function isWireEnvelope(x: unknown): x is WireEnvelope {
+  if (!x || typeof x !== "object") return false;
+  return (
+    "is_scraper_poc_message" in x &&
+    x.is_scraper_poc_message === true &&
+    "thread" in x &&
+    "messages" in x
+  );
+}
