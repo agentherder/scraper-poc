@@ -5,7 +5,7 @@ export const scrapeChatgptMessages = (
   doc: ParentNode = document,
   now: () => number = Date.now,
 ): WireMessage[] => {
-  const turns = qa(doc, "[data-testid^='conversation-turn-']");
+  const turns = qa(doc, "[data-turn-id]");
   if (!turns?.length) {
     return scrapeNodeMessages(doc, now);
   }
