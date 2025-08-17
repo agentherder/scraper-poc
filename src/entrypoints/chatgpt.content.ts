@@ -1,22 +1,62 @@
 import { scrapeChatgptThread } from "@/scrape/chatgpt/thread";
+import { qa } from "@/scrape/dom";
 import { browser } from "wxt/browser";
 import { defineContentScript } from "wxt/utils/define-content-script";
 
 const STREAM_DEBOUNCE_MS = 1000;
+const HYDRATION_IDLE_MS = 500;
+const HYDRATION_MAX_WAIT_MS = 15000;
 
 export default defineContentScript({
   matches: ["https://chatgpt.com/*"],
+  runAt: "document_idle",
   main(ctx) {
     console.log("Scraper PoC loading chatgpt content script");
-    const data = scrapeChatgptThread();
-    console.log(data);
-    browser.runtime.sendMessage(data);
 
     const emitCapture = () => {
       const detail = scrapeChatgptThread();
       console.log("Captured", detail);
+      // Notify both the extension runtime and any in-page listeners
+      browser.runtime.sendMessage(detail);
       window.dispatchEvent(new CustomEvent("AgentHerderCapture", { detail }));
     };
+
+    // Wait for React hydration to complete (heuristic):
+    // - Wait until at least one message element exists
+    // - Then wait for a short idle period with no DOM mutations
+    const waitForHydration = async () =>
+      new Promise<void>((resolve) => {
+        let idleTimer: ReturnType<typeof ctx.setTimeout> | undefined;
+        const startIdle = () => {
+          if (idleTimer) clearTimeout(idleTimer);
+          idleTimer = ctx.setTimeout(() => {
+            observer.disconnect();
+            resolve();
+          }, HYDRATION_IDLE_MS);
+        };
+
+        const hasMessages = () => !!qa(document, "[data-message-id]")?.length;
+        const observer = new MutationObserver(() => {
+          if (hasMessages()) startIdle();
+        });
+
+        // If messages already present, start idle timer immediately
+        if (hasMessages()) startIdle();
+
+        observer.observe(document.body, {
+          subtree: true,
+          childList: true,
+          characterData: true,
+        });
+
+        // Fallback: don't wait forever
+        ctx.setTimeout(() => {
+          observer.disconnect();
+          resolve();
+        }, HYDRATION_MAX_WAIT_MS);
+      });
+
+    waitForHydration().then(() => emitCapture());
 
     const bodyObserver = new MutationObserver((muts) => {
       for (const mut of muts) {
