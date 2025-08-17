@@ -1,3 +1,4 @@
+import { ResetStoreButton } from "@/components/store/reset";
 import { StoreSummary } from "@/components/store/summary";
 import { Button } from "@/components/ui/button";
 import { StoreUi } from "@/store";
@@ -16,6 +17,7 @@ function App() {
     <div className="flex flex-col items-start gap-4 p-4">
       <h1 className="text-2xl font-bold">Scraper PoC</h1>
       <Button onClick={incrementCount}>count is {count}</Button>
+      <ResetStoreButton />
       <StoreSummary />
     </div>
   );
