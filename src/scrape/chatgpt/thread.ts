@@ -3,15 +3,22 @@ import { scrapeChatgptMessages } from "./messages";
 
 const conversationIdPattern = /^\/c\/([^\/?#]+)(?=\/|$)/;
 
-export const scrapeChatgptThread = (
+export function scrapeChatgptThread(
   doc: ParentNode = document,
   loc: Location = window.location,
   now: () => number = Date.now,
-): WireEnvelope => {
+): WireEnvelope {
   const idMatches = conversationIdPattern.exec(loc.pathname);
-  if (!idMatches) throw Error("No conversation ID found");
   const scraped_at = now();
-  const messages = scrapeChatgptMessages(doc, () => scraped_at);
+  if (!idMatches) {
+    return {
+      is_scraper_poc_message: true,
+      ok: false,
+      scraped_at,
+      errors: [`Cannot find thread ID in URL "${loc.pathname}"`],
+    };
+  }
+  const { messages, errors } = scrapeChatgptMessages(doc);
   const title = (window.document.title || messages[0]?.content || "")
     .trim()
     .slice(0, 255);
@@ -21,11 +28,13 @@ export const scrapeChatgptThread = (
     service: "chatgpt",
     url: loc.href,
     title,
-    scraped_at,
   };
   return {
     is_scraper_poc_message: true,
+    ok: true,
+    scraped_at,
     thread,
     messages,
+    errors,
   };
-};
+}

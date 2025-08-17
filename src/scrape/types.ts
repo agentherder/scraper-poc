@@ -10,15 +10,15 @@ export type WireEnvelope =
       scraped_at: number;
       thread: WireThread;
       messages: WireMessage[];
-      error?: never;
+      errors: string[];
     }
   | {
       is_scraper_poc_message: true;
       ok: false;
       scraped_at: number;
-      thread: Partial<WireThread>;
-      messages: Partial<WireMessage>[];
-      error: string;
+      thread?: never;
+      messages?: never;
+      errors: string[];
     };
 
 export type WireThread = {

@@ -1,38 +1,46 @@
 import { qa } from "@/scrape/dom";
 import { type WireMessage } from "@/scrape/types";
 
-export const scrapeChatgptMessages = (
-  doc: ParentNode = document,
-  now: () => number = Date.now,
-): WireMessage[] => {
-  const turns = qa(doc, "[data-turn-id]");
-  if (!turns?.length) {
-    return scrapeNodeMessages(doc, now);
-  }
-  const messages: WireMessage[] = [];
-  for (const turnEl of turns) {
-    messages.push(...scrapeNodeMessages(turnEl, now));
-  }
-  return messages;
-};
+const ID_ATTRIBUTE = "data-message-id";
+const MESSAGES_SELECTOR = "[data-message-id]";
+const ROLE_ATTRIBUTE = "data-message-author-role";
+const MODEL_ATTRIBUTE = "data-message-model-slug";
 
-const scrapeNodeMessages = (
-  parentNode: ParentNode,
-  now: () => number,
-): WireMessage[] => {
-  const msgEls = qa(parentNode, "[data-message-id]");
+export function scrapeChatgptMessages(doc: ParentNode = document): {
+  messages: WireMessage[];
+  errors: string[];
+} {
   const messages: WireMessage[] = [];
-  if (!msgEls) return messages;
+  const errors: string[] = [];
+  const msgEls = qa(doc, MESSAGES_SELECTOR);
+  if (!msgEls) {
+    return {
+      messages,
+      errors: [`Cannot find messages "${MESSAGES_SELECTOR}"`],
+    };
+  }
   for (const msgEl of msgEls) {
-    const role = msgEl.getAttribute("data-message-author-role") || undefined;
+    const external_id = msgEl.getAttribute(ID_ATTRIBUTE);
+    if (!external_id) {
+      errors.push(`Cannot find message ID "${ID_ATTRIBUTE}"`);
+      continue;
+    }
+    const role = msgEl.getAttribute(ROLE_ATTRIBUTE) || undefined;
+    if (!role) {
+      errors.push(`Cannot find message role "${ROLE_ATTRIBUTE}"`);
+    }
+    const model = msgEl.getAttribute(MODEL_ATTRIBUTE) || undefined;
+    if (!model) {
+      errors.push(`Cannot find message model "${MODEL_ATTRIBUTE}"`);
+    }
+
     messages.push({
-      external_id: msgEl.getAttribute("data-message-id") || undefined,
+      external_id,
       role,
-      model: msgEl.getAttribute("data-message-model-slug") || undefined,
+      model,
       content: (role === "user" ? msgEl.textContent : msgEl.innerHTML) || "",
       source: role === "user" ? "innerText" : "innerHTML",
-      scraped_at: now(),
     });
   }
-  return messages;
-};
+  return { messages, errors };
+}

@@ -9,8 +9,13 @@ export default defineBackground(() => {
 
   browser.runtime.onMessage.addListener(async (e) => {
     if (!isWireEnvelope(e)) return;
-    if (!e.ok) return;
+
     const { store } = await storePromise;
+
+    if (!e.ok) {
+      store.setValue("error", e.errors.join("\n"));
+      return;
+    }
 
     store.transaction(() => {
       try {
@@ -35,6 +40,7 @@ export default defineBackground(() => {
           });
         });
       } catch (error) {
+        console.error(error);
         store.setValue("error", String(error));
       }
     });
