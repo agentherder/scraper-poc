@@ -3,27 +3,38 @@
  * to be sent to the background service worker
  * via chrome.runtime.sendMessage
  */
-export type WireEnvelope = {
-  is_scraper_poc_message: true;
-  thread: WireThread;
-  messages: WireMessage[];
-};
+export type WireEnvelope =
+  | {
+      is_scraper_poc_message: true;
+      ok: true;
+      scraped_at: number;
+      thread: WireThread;
+      messages: WireMessage[];
+      error?: never;
+    }
+  | {
+      is_scraper_poc_message: true;
+      ok: false;
+      scraped_at: number;
+      thread: Partial<WireThread>;
+      messages: Partial<WireMessage>[];
+      error: string;
+    };
 
 export type WireThread = {
-  /** platform assigned thread id*/
-  external_id?: string;
   /** e.g. openai, anthropic, google, xai */
-  platform?: string;
+  platform: string;
   /** e.g. chatgpt, claude, gemini, grok */
-  service?: string;
-  url?: string;
+  service: string;
+  /** platform assigned thread id*/
+  external_id: string;
+  url: string;
   title?: string;
-  scraped_at: number;
 };
 
 export type WireMessage = {
   /** platform assigned message id */
-  external_id?: string;
+  external_id: string;
   /** e.g. user, assistant */
   role?: string;
   /** e.g. gpt-4o, claude-4-sonnet */
@@ -31,15 +42,16 @@ export type WireMessage = {
   content: string;
   /** e.g. innerText, innerHTML */
   source: string;
-  scraped_at: number;
 };
 
 export function isWireEnvelope(x: unknown): x is WireEnvelope {
   if (!x || typeof x !== "object") return false;
-  return (
-    "is_scraper_poc_message" in x &&
-    x.is_scraper_poc_message === true &&
-    "thread" in x &&
-    "messages" in x
-  );
+  if (!("is_scraper_poc_message" in x)) return false;
+  if (x.is_scraper_poc_message !== true) return false;
+  if (!("ok" in x)) return false;
+  if (typeof x.ok !== "boolean") return false;
+  if (!("scraped_at" in x)) return false;
+  if (typeof x.scraped_at !== "number") return false;
+  // skip exhaustive check for now
+  return true;
 }

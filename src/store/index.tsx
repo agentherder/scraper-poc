@@ -7,12 +7,13 @@ const STORE_ID = "scraper-poc-store";
 
 const tablesSchema = {
   threads: {
-    external_id: { type: "string" },
     platform: { type: "string" },
     service: { type: "string" },
+    external_id: { type: "string" },
     url: { type: "string" },
     title: { type: "string" },
-    scraped_at: { type: "number" },
+    first_seen_at: { type: "number" },
+    last_seen_at: { type: "number" },
   },
   messages: {
     thread_id: { type: "string" },
@@ -21,12 +22,15 @@ const tablesSchema = {
     model: { type: "string" },
     content: { type: "string" },
     source: { type: "string" },
-    scraped_at: { type: "number" },
+    observed_seq: { type: "number" },
+    first_seen_at: { type: "number" },
+    last_seen_at: { type: "number" },
   },
 } as const satisfies TablesSchema;
 
 const valuesSchema = {
   count: { type: "number", default: 0 },
+  error: { type: "string" },
 } as const satisfies ValuesSchema;
 
 /**
