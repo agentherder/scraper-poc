@@ -1,5 +1,5 @@
-import { qa } from "@/scrape/dom";
-import { type WireMessage } from "@/scrape/types";
+import { qa } from "@/lib/scrape/dom";
+import { type WireMessage } from "@/lib/scrape/types";
 
 const ID_ATTRIBUTE = "data-message-id";
 const MESSAGES_SELECTOR = "[data-message-id]";

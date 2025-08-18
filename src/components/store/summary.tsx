@@ -1,4 +1,4 @@
-import { StoreUi } from "@/store";
+import { StoreUi } from "@/lib/store";
 import * as UiReact from "tinybase/ui-react/with-schemas";
 
 const { useRowCount } = UiReact as StoreUi;

@@ -2,48 +2,53 @@
 
 ## Project Structure & Module Organization
 
-- Source: `src/`
-  - `entrypoints/`: extension surfaces — `background.ts`, `popup/`, `sidepanel/`, `chatgpt.content.ts`.
-  - `scrape/`: DOM and ChatGPT scraping (`messages.ts`, `thread.ts`, `dom.ts`).
-  - `components/`: React UI and store helpers.
-  - `store/`: TinyBase-backed persisted/ephemeral stores.
-  - `lib/` and `assets/`: utilities, Tailwind/CSS/assets.
-- Config: `wxt.config.ts`, `tsconfig.json`, `.prettierrc`.
-- Static: `public/`.
+- `src/entrypoints/`: Web extension entry points (`background.ts`, `chatgpt.content.ts`, `popup/`, `sidepanel/`).
+- `src/lib/`: Core logic.
+  - `store/`: TinyBase schemas, provider, and ID helpers.
+  - `scrape/`: DOM helpers and ChatGPT scrapers.
+- `src/components/`: Reusable UI (e.g., `ui/button.tsx`, store utilities).
+- `public/`: Icons and static assets.
+- `.wxt/`, `wxt.config.ts`: WXT configuration. `tsconfig.json` defines `@/*` path alias.
 
 ## Build, Test, and Development Commands
 
-- `pnpm install`: install dependencies (first run).
-- `pnpm dev`: start WXT dev server (Chromium).
-- `pnpm dev:firefox`: dev server targeting Firefox.
-- `pnpm build` / `pnpm build:firefox`: production builds to `.output/`.
-- `pnpm zip` / `pnpm zip:firefox`: package build artifacts.
-- `pnpm compile`: type-check TypeScript only.
-- `pnpm format` / `pnpm format:check`: auto-format or verify formatting.
+- `pnpm dev` / `pnpm dev:firefox`: Run the extension in a browser via WXT.
+- `pnpm build` / `pnpm build:firefox`: Production build to `.output/`.
+- `pnpm zip` / `pnpm zip:firefox`: Package build artifacts.
+- `pnpm compile`: Type-check TypeScript only.
+- `pnpm format` / `pnpm format:check`: Auto-format or verify formatting.
+
+Example: `pnpm dev` then load the extension per WXT’s prompt.
 
 ## Coding Style & Naming Conventions
 
-- Formatting: Prettier (Tailwind plugin). Run `pnpm format` before PRs.
-- TypeScript: prefer explicit types for public APIs; use path alias `@/…`.
-- React: components PascalCase (e.g., `App.tsx`); hooks/utils lowercase (e.g., `utils.ts`).
-- CSS: Tailwind v4; keep class lists ordered (plugin-enforced).
-- Indentation: 2 spaces; trailing commas enabled.
+- Language: TypeScript (`.ts`, `.tsx`) with React.
+- Formatting: Prettier (Tailwind plugin). Run `pnpm format` before pushing.
+- Imports: Use `@/...` alias for `src` (e.g., `import { q } from "@/lib/scrape/dom"`).
+- Components: PascalCase files in `src/components/`; hooks and utilities in `src/lib/`.
+- Keep modules focused: scraping in `src/lib/scrape/`, state in `src/lib/store/`.
 
 ## Testing Guidelines
 
-- Current: no test runner configured. If adding tests, use Vitest + React Testing Library.
-- Naming: co-locate as `*.test.ts(x)` or under `__tests__/`.
-- Execution: add a future `pnpm test` script; ensure `pnpm compile` passes.
+- No automated tests are configured yet. Preferred stack: Vitest for units, Playwright for E2E.
+- For now, validate flows manually:
+  - Start with `pnpm dev` and navigate to `https://chatgpt.com/*`.
+  - Verify content script capture and background store updates (TinyBase in IndexedDB).
+- Name prospective test files `*.test.ts` and colocate with sources.
 
 ## Commit & Pull Request Guidelines
 
-- Commits: short, imperative summaries (e.g., "fix scrape selector", "scaffold sidepanel").
-- PRs: include what/why, linked issues, and screenshots/GIFs for UI changes (popup/sidepanel).
-- Quality gates: `pnpm build` succeeds, `pnpm compile` clean, `pnpm format:check` passes.
-- Include manual test steps for affected flows (e.g., chat page scrape, popup interactions).
+- Commits: Imperative, concise, present tense (e.g., "capture on react hydrate").
+- PRs: Include purpose, context, and screenshots/GIFs of popup/sidepanel as relevant.
+- Link issues, list manual test steps, and note any schema or entrypoint changes.
 
 ## Security & Configuration Tips
 
-- Avoid secrets in code; prefer WXT config and browser storage when needed.
-- Guard DOM selectors in content scripts; handle nulls and permission changes.
-- Persisted data uses TinyBase (IndexedDB); avoid storing sensitive content.
+- Scope content scripts narrowly (`matches: ["https://chatgpt.com/*"]`). Avoid logging sensitive content.
+- Persistent data lives in IndexedDB via TinyBase; provide a reset path (see `ResetStoreButton`).
+- When changing `wxt.config.ts` or Tailwind setup, restart dev.
+
+## Architecture Overview
+
+- Content script scrapes ChatGPT pages and emits a typed envelope to the background.
+- Background persists threads/messages in TinyBase and exposes UI via popup/sidepanel.

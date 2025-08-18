@@ -1,4 +1,4 @@
-import { WireEnvelope, type WireThread } from "@/scrape/types";
+import { WireEnvelope, type WireThread } from "@/lib/scrape/types";
 import { scrapeChatgptMessages } from "./messages";
 
 const conversationIdPattern = /^\/c\/([^\/?#]+)(?=\/|$)/;

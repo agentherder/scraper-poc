@@ -1,5 +1,5 @@
-import { scrapeChatgptThread } from "@/scrape/chatgpt/thread";
-import { qa } from "@/scrape/dom";
+import { scrapeChatgptThread } from "@/lib/scrape/chatgpt/thread";
+import { qa } from "@/lib/scrape/dom";
 import { browser } from "wxt/browser";
 import { defineContentScript } from "wxt/utils/define-content-script";
 

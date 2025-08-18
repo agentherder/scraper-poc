@@ -1,7 +1,7 @@
 import { ResetStoreButton } from "@/components/store/reset";
 import { StoreSummary } from "@/components/store/summary";
 import { Button } from "@/components/ui/button";
-import { StoreUi } from "@/store";
+import { StoreUi } from "@/lib/store";
 import * as UiReact from "tinybase/ui-react/with-schemas";
 
 const { useValue, useSetValueCallback } = UiReact as StoreUi;

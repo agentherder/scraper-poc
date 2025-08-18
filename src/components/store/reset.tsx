@@ -1,4 +1,4 @@
-import { StoreUi } from "@/store";
+import { StoreUi } from "@/lib/store";
 import { useCallback } from "react";
 import * as UiReact from "tinybase/ui-react/with-schemas";
 import { Button } from "../ui/button";

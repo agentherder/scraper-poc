@@ -1,6 +1,6 @@
-import { isWireEnvelope } from "@/scrape/types";
-import { initStore } from "@/store";
-import { buildMessageRowId, buildThreadRowId } from "@/store/id";
+import { isWireEnvelope } from "@/lib/scrape/types";
+import { initStore } from "@/lib/store";
+import { buildMessageRowId, buildThreadRowId } from "@/lib/store/id";
 import { browser } from "wxt/browser";
 import { defineBackground } from "wxt/utils/define-background";
 

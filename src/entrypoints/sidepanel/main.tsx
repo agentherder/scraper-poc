@@ -1,5 +1,5 @@
 import "@/assets/tailwind.css";
-import { StoreProvider } from "@/store";
+import { StoreProvider } from "@/lib/store";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
