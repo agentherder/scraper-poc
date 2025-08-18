@@ -56,7 +56,43 @@ export default defineContentScript({
         }, HYDRATION_MAX_WAIT_MS);
       });
 
-    waitForHydration().then(() => emitCapture());
+    // Helper: schedule a hydration-aware capture, canceling prior schedules
+    const scheduleHydrationCapture = (() => {
+      let token = 0;
+      return () => {
+        const current = ++token;
+        waitForHydration().then(() => {
+          if (current !== token) return; // superseded by newer schedule
+          emitCapture();
+        });
+      };
+    })();
+
+    // Initial capture after hydration
+    scheduleHydrationCapture();
+
+    // SPA navigation detection via WXT's locationchange event
+    let lastHref = location.href;
+    ctx.addEventListener(window, "wxt:locationchange", (evt: any) => {
+      const newUrl = evt?.newUrl ?? location.href;
+      if (newUrl === lastHref) return;
+      lastHref = newUrl;
+      scheduleHydrationCapture();
+    });
+
+    // Optional belt-and-suspenders: back/forward and hash changes
+    ctx.addEventListener(window, "popstate", () => {
+      if (location.href !== lastHref) {
+        lastHref = location.href;
+        scheduleHydrationCapture();
+      }
+    });
+    ctx.addEventListener(window, "hashchange", () => {
+      if (location.href !== lastHref) {
+        lastHref = location.href;
+        scheduleHydrationCapture();
+      }
+    });
 
     const bodyObserver = new MutationObserver((muts) => {
       for (const mut of muts) {
