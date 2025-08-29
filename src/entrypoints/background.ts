@@ -5,6 +5,10 @@ import { browser } from "wxt/browser";
 import { defineBackground } from "wxt/utils/define-background";
 
 export default defineBackground(() => {
+  browser.sidePanel
+    ?.setPanelBehavior?.({ openPanelOnActionClick: false })
+    .catch(console.error);
+
   const storePromise = initStore();
 
   browser.runtime.onMessage.addListener(async (e) => {
