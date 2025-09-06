@@ -11,11 +11,13 @@ export function OpenSidepanelButton() {
 
       if (tab?.id != null) {
         await browser.sidePanel.open({ tabId: tab.id });
+        window.close();
         return;
       }
 
       if (tab?.windowId != null) {
         await browser.sidePanel.open({ windowId: tab.windowId });
+        window.close();
         return;
       }
     } catch (error) {
