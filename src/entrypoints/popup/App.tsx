@@ -1,4 +1,5 @@
 import { OpenSidepanelButton } from "@/components/browser/sidepanel";
+import { StoreError } from "@/components/store/error";
 import { ResetStoreButton } from "@/components/store/reset";
 import { StoreSummary } from "@/components/store/summary";
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,7 @@ function App() {
       <Button onClick={incrementCount}>count is {count}</Button>
       <ResetStoreButton />
       <StoreSummary />
+      <StoreError />
     </div>
   );
 }

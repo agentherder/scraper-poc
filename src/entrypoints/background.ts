@@ -5,19 +5,31 @@ import { browser } from "wxt/browser";
 import { defineBackground } from "wxt/utils/define-background";
 
 export default defineBackground(() => {
+  const storePromise = initStore();
+
+  const lazyLogError = (error: unknown) => {
+    console.error(error);
+    storePromise.then(({ store }) => {
+      store.setValue("error", String(error));
+    });
+  };
+
   browser.sidePanel
     ?.setPanelBehavior?.({ openPanelOnActionClick: false })
-    .catch(console.error);
-
-  const storePromise = initStore();
+    .catch(lazyLogError);
 
   browser.runtime.onMessage.addListener(async (e) => {
     if (!isWireEnvelope(e)) return;
 
     const { store } = await storePromise;
 
+    const logError = (error: unknown) => {
+      console.error(error);
+      store.setValue("error", String(error));
+    };
+
     if (!e.ok) {
-      store.setValue("error", e.errors.join("\n"));
+      logError(e.errors.join("\n"));
       return;
     }
 
@@ -44,8 +56,7 @@ export default defineBackground(() => {
           });
         });
       } catch (error) {
-        console.error(error);
-        store.setValue("error", String(error));
+        logError(error);
       }
     });
   });
