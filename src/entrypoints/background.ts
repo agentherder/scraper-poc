@@ -7,29 +7,24 @@ import { defineBackground } from "wxt/utils/define-background";
 export default defineBackground(() => {
   const storePromise = initStore();
 
-  const lazyLogError = (error: unknown) => {
-    console.error(error);
-    storePromise.then(({ store }) => {
-      store.setValue("error", String(error));
-    });
-  };
-
   browser.sidePanel
     ?.setPanelBehavior?.({ openPanelOnActionClick: false })
-    .catch(lazyLogError);
+    .catch(console.error);
 
   browser.runtime.onMessage.addListener(async (e) => {
     if (!isWireEnvelope(e)) return;
 
     const { store } = await storePromise;
 
-    const logError = (error: unknown) => {
-      console.error(error);
-      store.setValue("error", String(error));
-    };
-
     if (!e.ok) {
-      logError(e.errors.join("\n"));
+      store.transaction(() => {
+        e.notifications?.forEach((notification) => {
+          store.addRow("notifications", {
+            ...notification,
+            created_at: e.scraped_at,
+          });
+        });
+      });
       return;
     }
 
@@ -55,8 +50,17 @@ export default defineBackground(() => {
             last_seen_at: e.scraped_at,
           });
         });
+        e.notifications?.forEach((notification) => {
+          store.addRow("notifications", {
+            ...notification,
+            created_at: e.scraped_at,
+          });
+        });
       } catch (error) {
-        logError(error);
+        store.addRow("notifications", {
+          content: String(error),
+          created_at: e.scraped_at,
+        });
       }
     });
   });

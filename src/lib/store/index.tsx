@@ -26,11 +26,15 @@ const tablesSchema = {
     first_seen_at: { type: "number" },
     last_seen_at: { type: "number" },
   },
+  notifications: {
+    content: { type: "string" },
+    thread_id: { type: "string" },
+    created_at: { type: "number" },
+  },
 } as const satisfies TablesSchema;
 
 const valuesSchema = {
   count: { type: "number", default: 0 },
-  error: { type: "string" },
 } as const satisfies ValuesSchema;
 
 /**

@@ -6,11 +6,13 @@ const { useRowCount } = UiReact as StoreUi;
 export function StoreSummary() {
   const threadCount = useRowCount("threads");
   const messageCount = useRowCount("messages");
+  const notificationCount = useRowCount("notifications");
   return (
     <div>
       <h2 className="text-lg font-bold">Store Summary</h2>
       <p>Threads: {threadCount}</p>
       <p>Messages: {messageCount}</p>
+      <p>Notifications: {notificationCount}</p>
     </div>
   );
 }

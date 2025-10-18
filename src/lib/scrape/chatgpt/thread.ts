@@ -15,7 +15,9 @@ export function scrapeChatgptThread(
       is_scraper_poc_message: true,
       ok: false,
       scraped_at,
-      errors: [`Cannot find thread ID in URL "${loc.pathname}"`],
+      notifications: [
+        { content: `Cannot find thread ID in URL "${loc.pathname}"` },
+      ],
     };
   }
   const { messages, errors } = scrapeChatgptMessages(doc);
@@ -35,6 +37,6 @@ export function scrapeChatgptThread(
     scraped_at,
     thread,
     messages,
-    errors,
+    notifications: errors.map((error) => ({ content: error })),
   };
 }
