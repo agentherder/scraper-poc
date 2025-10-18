@@ -30,8 +30,8 @@ export function scrapeChatgptMessages(doc: ParentNode = document): {
       errors.push(`Cannot find message role "${ROLE_ATTRIBUTE}"`);
     }
     const model = msgEl.getAttribute(MODEL_ATTRIBUTE) || undefined;
-    if (!model) {
-      errors.push(`Cannot find message model "${MODEL_ATTRIBUTE}"`);
+    if (role === "assistant" && !model) {
+      errors.push(`Cannot find assistant message model "${MODEL_ATTRIBUTE}"`);
     }
 
     messages.push({
